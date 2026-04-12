@@ -50,33 +50,8 @@ def calculos(data):
 
     return data
 
-# ALERTAS
-def comprobar_alertas(data):
-    alertas = []
-
-    acc = data["aceleracion"]
-    vib = data["vibracion"]
-    temp = data["temperatura"]
-
-    if acc > 55:
-        alertas.append(("CRITICAL", "ACELERACION", acc))
-    elif acc > 40:
-        alertas.append(("WARNING", "ACELERACION", acc))
-
-    if vib > 60:
-        alertas.append(("CRITICAL", "VIBRACION", vib))
-    elif vib > 45:
-        alertas.append(("WARNING", "VIBRACION", vib))
-
-    if temp > 80:
-        alertas.append(("CRITICAL", "TEMPERATURA", temp))
-    elif temp > 65:
-        alertas.append(("WARNING", "TEMPERATURA", temp))
-
-    return alertas
-
 # GUARDAR EN INFLUXDB
-def guardar_influx(sensor_id, data, alertas):
+def guardar_influx(sensor_id, data):
     point = (
         Point("sensores")
         .tag("sensor_id", sensor_id)
@@ -108,19 +83,8 @@ def al_recibir(client, userdata, msg):
         # 1. CALCULAR ACELERACIONY VIBRACION
         data = calculos(data)
 
-        # 2. COMPROBAR ALERTAS
-        alertas = comprobar_alertas(data)
-
-        # 3. LOG ALERTAS
-        if alertas:
-            print("ALERTAS DETECTADAS:")
-            for a in alertas:
-                print(a)
-        else:
-            print("OK")
-
-        # 4. GUARDAR EN INFLUXDB
-        guardar_influx(sensor_id, data, alertas)
+        # 2. GUARDAR EN INFLUXDB
+        guardar_influx(sensor_id, data)
 
     except Exception as e:
         print("Error:", e)
