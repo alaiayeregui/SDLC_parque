@@ -12,9 +12,9 @@ MQTT_PORT = 1883
 MQTT_TOPIC = "rollercoaster/sensors"
 
 INFLUX_URL = "https://eu-central-1-1.aws.cloud2.influxdata.com"
-INFLUX_TOKEN = "zLizrq1VxuPDuH8Jk2ZtYFMagYk5j0pqZ_FJGUULWyf1-h4yHjsnTiiHfXmgRIhWtJET3cZQK8lGSlSXsvkhFQ=="
-INFLUX_ORG = "Parque"
-INFLUX_BUCKET = "Montaña Rusa"
+INFLUX_TOKEN = "583Jsg7BKx38HCdEUhgK0iBygkwq_1bg5UVSEjLBEeCwf_X4JCdx7BKx_br0AlUOgF_6eqbHbEEbBkeK0LeEfw=="
+INFLUX_ORG = "deusto"
+INFLUX_BUCKET = "Montaña_Rusa"
 
 SENSOR_ID = "sensor_1"
 
