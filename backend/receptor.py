@@ -16,10 +16,15 @@ INFLUX_TOKEN = "583Jsg7BKx38HCdEUhgK0iBygkwq_1bg5UVSEjLBEeCwf_X4JCdx7BKx_br0AlUO
 INFLUX_ORG = "deusto"
 INFLUX_BUCKET = "Montaña_Rusa"
 
-SENSOR_ID = "sensor_1"
-
 # MQTT
 cliente_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+
+def iniciar_mqtt():
+    cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
+
+if __name__ == "__main__":
+    iniciar_mqtt()
+
 
 # INFLUXDB
 influx_client = InfluxDBClient(
@@ -92,9 +97,20 @@ def al_recibir(client, userdata, msg):
 # MQTT SETUP
 cliente_mqtt.on_message = al_recibir
 
-cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
-cliente_mqtt.subscribe("montana/sensores")
+
+def iniciar_mqtt():
+    cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
+    cliente_mqtt.loop_start()
+    cliente_mqtt.subscribe("algo")
+
+if __name__ == "__main__":
+    iniciar_mqtt()
 
 # LOOP
-print("Receptor activo...")
-cliente_mqtt.loop_forever()
+def iniciar_receptor():
+    print("Receptor activo...")
+    cliente_mqtt.loop_forever()
+
+
+if __name__ == "__main__":
+    iniciar_receptor()
