@@ -10,8 +10,6 @@ MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
 MQTT_TOPIC = "rollercoaster/sensors"
 
-SENSOR_ID = "sensor_1"
-
 # CLIENTE MQTT
 cliente_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
@@ -32,6 +30,30 @@ def generar_datos_sensor():
         "z": ejes["z"],
         "temperatura": temperatura
     }
+
+# GENERAR ID
+def generar_sensor_id():
+    vagon = random.randint(1, 4)
+    eje = random.choice(["delantero", "trasero"])
+
+    sensor_id = f"Vagon{vagon}Eje{eje}"
+
+    return sensor_id
+
+# ENVIAR DATOS
+def enviar_datos_mqtt(datos):
+    sensor_id = generar_sensor_id()
+
+    payload = {
+        "sensor_id": sensor_id,
+        "timestamp": datetime.now().isoformat(),
+        "data": datos
+    }
+
+    cliente_mqtt.publish(
+        "montana/sensores",
+        json.dumps(payload)
+    )
 
 # ENVIAR DATOS
 def enviar_datos_mqtt(datos):
