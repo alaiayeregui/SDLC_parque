@@ -19,13 +19,6 @@ INFLUX_BUCKET = "Montaña_Rusa"
 # MQTT
 cliente_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
-def iniciar_mqtt():
-    cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
-
-if __name__ == "__main__":
-    iniciar_mqtt()
-
-
 # INFLUXDB
 influx_client = InfluxDBClient(
     url=INFLUX_URL,
@@ -34,6 +27,12 @@ influx_client = InfluxDBClient(
 )
 
 write_api = influx_client.write_api()
+
+# COMPROBAR LA CONEXION
+query_api = influx_client.query_api()
+query = 'buckets()'
+result = query_api.query(query)
+print(result)
 
 # CALCULOS
 def calculos(data):
@@ -88,8 +87,8 @@ def al_recibir(client, userdata, msg):
         # 1. CALCULAR ACELERACIONY VIBRACION
         data = calculos(data)
 
-        # 2. GUARDAR EN INFLUXDB
-        guardar_influx(sensor_id, data)
+        # 2. NOTIFICAR A LOS OBSERVADORES
+        sujeto.notificar(sensor_id, data)
 
     except Exception as e:
         print("Error:", e)
@@ -97,10 +96,35 @@ def al_recibir(client, userdata, msg):
 # MQTT SETUP
 cliente_mqtt.on_message = al_recibir
 
-
 def iniciar_mqtt():
     cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
     cliente_mqtt.subscribe(MQTT_TOPIC)
+
+
+# OBSERVER PATTERN
+class Observador:
+    def actualizar(self):
+        pass
+
+class SujetoSensores:
+    def __init__(self):
+        self.observadores = []
+
+    def suscribir(self, obs):
+        self.observadores.append(obs)
+
+    def notificar(self, sensor_id, data):
+        for obs in self.observadores:
+            obs.actualizar(sensor_id, data)
+
+# OBSERVADORES
+class ObservadorInflux(Observador):
+    def actualizar(self, sensor_id, data):
+        guardar_influx(sensor_id, data)
+
+# SUJETO GLOBAL
+sujeto = SujetoSensores()
+sujeto.suscribir(ObservadorInflux())
 
 # LOOP
 def iniciar_receptor():
