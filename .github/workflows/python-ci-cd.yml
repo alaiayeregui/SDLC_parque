@@ -19,11 +19,17 @@ jobs:
       - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
-          # Verifica si tienes un requirements.txt en la raíz o en backend
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Forzamos la instalación desde la raíz
+          if [ -f requirements.txt ]; then 
+            pip install -r requirements.txt
+          elif [ -f backend/requirements.txt ]; then
+            pip install -r backend/requirements.txt
+          else
+            echo "Archivo requirements.txt no encontrado, instalando básicos..."
+            pip install numpy paho-mqtt influxdb-client pytest
+          fi
 
       - name: Ejecutar tests con pytest
         run: |
-          pip install pytest
-          # Ejecuta pytest apuntando a tu carpeta 'backend/test'
-          pytest backend/test
+          # Usamos python -m pytest para asegurar que el path actual se incluya
+          python -m pytest backend/test

@@ -1,0 +1,4 @@
+numpy
+paho-mqtt
+influxdb-client
+pytest
