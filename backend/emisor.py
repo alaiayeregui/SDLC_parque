@@ -15,6 +15,7 @@ cliente_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
 def iniciar_mqtt():
     cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
+    cliente_mqtt.loop_start()
 
 if __name__ == "__main__":
     iniciar_mqtt()
@@ -57,7 +58,7 @@ def enviar_datos_mqtt(datos):
     }
 
     cliente_mqtt.publish(
-        "montana/sensores",
+        MQTT_TOPIC,
         json.dumps(payload)
     )
 

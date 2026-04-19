@@ -12,7 +12,7 @@ MQTT_PORT = 1883
 MQTT_TOPIC = "rollercoaster/sensors"
 
 INFLUX_URL = "https://eu-central-1-1.aws.cloud2.influxdata.com"
-INFLUX_TOKEN = "583Jsg7BKx38HCdEUhgK0iBygkwq_1bg5UVSEjLBEeCwf_X4JCdx7BKx_br0AlUOgF_6eqbHbEEbBkeK0LeEfw=="
+INFLUX_TOKEN = "XBIwOzd4oQ87X4mCrrkT7xDllsbhEWpJCWurIsAFX9zwe69fi_Xd29mOR9R7sTvbTKY5gX0N2LyHp-01DGJNtA=="
 INFLUX_ORG = "deusto"
 INFLUX_BUCKET = "Montaña_Rusa"
 
@@ -100,11 +100,7 @@ cliente_mqtt.on_message = al_recibir
 
 def iniciar_mqtt():
     cliente_mqtt.connect(MQTT_BROKER, MQTT_PORT, 60)
-    cliente_mqtt.loop_start()
-    cliente_mqtt.subscribe("algo")
-
-if __name__ == "__main__":
-    iniciar_mqtt()
+    cliente_mqtt.subscribe(MQTT_TOPIC)
 
 # LOOP
 def iniciar_receptor():
@@ -113,4 +109,5 @@ def iniciar_receptor():
 
 
 if __name__ == "__main__":
+    iniciar_mqtt()
     iniciar_receptor()
