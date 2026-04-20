@@ -3,27 +3,30 @@ import random
 import numpy as np
 import paho.mqtt.client as mqtt
 from datetime import datetime
-
+import os
+from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 
-# CONFIGURACIÓN
-MQTT_BROKER = "localhost"
-MQTT_PORT = 1883
-MQTT_TOPIC = "rollercoaster/sensors"
+load_dotenv()
 
-INFLUX_URL = "https://eu-central-1-1.aws.cloud2.influxdata.com"
-INFLUX_TOKEN = "XBIwOzd4oQ87X4mCrrkT7xDllsbhEWpJCWurIsAFX9zwe69fi_Xd29mOR9R7sTvbTKY5gX0N2LyHp-01DGJNtA=="
-INFLUX_ORG = "deusto"
-INFLUX_BUCKET = "Montaña_Rusa"
+# CONFIGURACIÓN
+MQTT_BROKER = os.getenv("MQTT_BROKER")
+MQTT_PORT = int(os.getenv("MQTT_PORT", 1883)) # El puerto debe ser un entero
+MQTT_TOPIC = os.getenv("MQTT_TOPIC")
+
+token = os.getenv("INFLUX_TOKEN")
+url = os.getenv("INFLUX_URL")
+org = os.getenv("INFLUX_ORG")
+bucket = os.getenv("INFLUX_BUCKET")
 
 # MQTT
 cliente_mqtt = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
 # INFLUXDB
 influx_client = InfluxDBClient(
-    url=INFLUX_URL,
-    token=INFLUX_TOKEN,
-    org=INFLUX_ORG
+    url=url,
+    token=token,
+    org=org
 )
 
 write_api = influx_client.write_api()
@@ -69,8 +72,8 @@ def guardar_influx(sensor_id, data):
     )
 
     write_api.write(
-        bucket=INFLUX_BUCKET,
-        org=INFLUX_ORG,
+        bucket=bucket,
+        org=org,
         record=point
     )
 
